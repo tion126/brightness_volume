@@ -12,9 +12,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  double volume     = 0.0;
-  double brightness = 0.0;
-  bool   keepOn     = false;
+  double volume         = 0.0;
+  double brightness     = 0.0;
+  bool   keepOn         = false;
+  double freeDiskSpace  = 0;
+  double totalDiskSpace = 0;
 
   @override
   void initState() {
@@ -23,9 +25,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void init() async{
-    this.brightness = await BVUtils.brightness;
-    this.volume = await BVUtils.volume;
-    this.keepOn = await BVUtils.isKeptOn;
+
+    this.brightness     = (await BVUtils.brightness).clamp(0.0, 1.0);
+    this.volume         = (await BVUtils.volume).clamp(0.0, 1.0);
+    this.keepOn         = await BVUtils.isKeptOn;
+    this.freeDiskSpace  = await BVUtils.freeDiskSpace;
+    this.totalDiskSpace = await BVUtils.totalDiskSpace;
     print("brightness::$brightness volume:$volume isKeptOn:$keepOn");
     this.setState(() {});
   }
@@ -61,7 +66,9 @@ class _MyAppState extends State<MyApp> {
               this.keepOn = e;
               BVUtils.keepOn(e);
             });
-          })
+          }),
+          SizedBox(height: 50),
+          Text("disk space $freeDiskSpace/$totalDiskSpace"),
         ])
       ),
     );

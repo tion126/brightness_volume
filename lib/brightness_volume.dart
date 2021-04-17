@@ -21,4 +21,7 @@ class BVUtils {
 
   static Future setVolume(double volume) => _channel.invokeMethod('setVolume', {"volume" : volume});
 
+  static Future<double> get freeDiskSpace async => (await _channel.invokeMethod('freeDiskSpace')) as double;
+
+  static Future<double> get totalDiskSpace async => (await _channel.invokeMethod('totalDiskSpace')) as double;
 }

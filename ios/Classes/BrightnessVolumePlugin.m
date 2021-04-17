@@ -1,6 +1,8 @@
 #import "BrightnessVolumePlugin.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVKit/AVKit.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 @interface BrightnessVolumePlugin()
 
@@ -54,10 +56,50 @@
 #pragma clang diagnostic pop
         result(nil);
     }
-    else {
+    else if ([@"freeDiskSpace" isEqualToString:call.method]){
+        result(@(self.getAvailableDiskSize));
+    }else if ([@"totalDiskSpace" isEqualToString:call.method]){
+        result(@(self.getTotalDiskSize));
+    }else {
         result(FlutterMethodNotImplemented);
     }
-    
 }
+
+- (double)getTotalDiskSize {
+    struct statfs buf;
+    unsigned long long totalDiskSize = -1;
+    if (statfs("/var", &buf) >= 0) {
+        totalDiskSize = (unsigned long long)(buf.f_bsize * buf.f_blocks);
+    }
+    return totalDiskSize/1024/1024;
+}
+
+- (double)getAvailableDiskSize {
+    struct statfs buf;
+    unsigned long long availableDiskSize = -1;
+    if (statfs("/var", &buf) >= 0) {
+        availableDiskSize = (unsigned long long)(buf.f_bsize * buf.f_bavail);
+    }
+    return availableDiskSize/1024/1024;
+}
+
+- (NSString *)fileSizeToString:(unsigned long long)fileSize {
+    NSInteger KB = 1024;
+    NSInteger MB = KB*KB;
+    NSInteger GB = MB*KB;
+
+    if (fileSize < 10)  {
+        return @"0 B";
+    }else if (fileSize < KB) {
+        return @"< 1 KB";
+    }else if (fileSize < MB) {
+        return [NSString stringWithFormat:@"%.2f KB",((CGFloat)fileSize)/KB];
+    }else if (fileSize < GB) {
+        return [NSString stringWithFormat:@"%.2f MB",((CGFloat)fileSize)/MB];
+    }else {
+         return [NSString stringWithFormat:@"%.2f GB",((CGFloat)fileSize)/GB];
+    }
+}
+
 
 @end

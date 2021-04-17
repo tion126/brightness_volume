@@ -14,6 +14,8 @@ import android.view.WindowManager;
 import android.content.Context;
 import android.media.AudioManager;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import android.os.Environment;
+import android.os.StatFs;
 
 /** BrightnessVolumePlugin */
 public class BrightnessVolumePlugin implements FlutterPlugin, MethodCallHandler , ActivityAware {
@@ -66,6 +68,29 @@ public class BrightnessVolumePlugin implements FlutterPlugin, MethodCallHandler 
       case "setVolume":
         double volume = call.argument("volume");
         setVolume(volume);
+        break;
+      case "freeDiskSpace": {
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        Long bytesAvailable;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2)
+          bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+        else
+          bytesAvailable = Long.valueOf(stat.getBlockSize()) * Long.valueOf(stat.getAvailableBlocks());
+        result.success((bytesAvailable / (1024f * 1024f)));
+
+        break;
+      }
+      case "totalDiskSpace":
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        Long bytesAvailable;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2)
+          bytesAvailable = stat.getBlockSizeLong() * stat.getBlockCountLong();
+        else
+          bytesAvailable = Long.valueOf(stat.getBlockSize()) * Long.valueOf(stat.getBlockCount());
+        result.success((bytesAvailable / (1024f * 1024f)));
+
         break;
       default:
         result.notImplemented();
