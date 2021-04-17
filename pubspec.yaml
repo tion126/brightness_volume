@@ -1,8 +1,8 @@
 name: brightness_volume
-description: A new flutter plugin project.
-version: 0.0.1
-author:
-homepage:
+description: Adjust the volume and brightness
+version: 1.0.0
+homepage: https://github.com/tion126
+repository: https://github.com/tion126/brightness_volume
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

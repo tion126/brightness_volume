@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:brightness_volume/brightness_volume.dart';
 
@@ -11,12 +12,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  double volume = 0.0;
+  double volume     = 0.0;
   double brightness = 0.0;
+  bool   keepOn     = false;
 
   @override
   void initState() {
     super.initState();
+    this.init();
+  }
+
+  void init() async{
+    this.brightness = await BVUtils.brightness;
+    this.volume = await BVUtils.volume;
+    this.keepOn = await BVUtils.isKeptOn;
+    print("brightness::$brightness volume:$volume isKeptOn:$keepOn");
+    this.setState(() {});
   }
 
   @override
@@ -33,26 +44,26 @@ class _MyAppState extends State<MyApp> {
             this.setState(() {
               this.volume = e;
               BVUtils.setVolume(e);
-              this.p();
             });
           }),
-          SizedBox(height: 100),
+          SizedBox(height: 50),
           Text("brightness $brightness"),
           Slider(value: brightness, onChanged: (e){
             this.setState(() {
               this.brightness = e;
               BVUtils.setBrightness(e);
-              this.p();
+            });
+          }),
+          SizedBox(height: 50),
+          Text("keep $keepOn"),
+          CupertinoSwitch(value: this.keepOn, onChanged: (e){
+            this.setState(() {
+              this.keepOn = e;
+              BVUtils.keepOn(e);
             });
           })
         ])
       ),
     );
-  }
-
-  void p() async{
-    var b = await BVUtils.brightness;
-    var v = await BVUtils.volume;
-    print("$b,$v");
   }
 }
