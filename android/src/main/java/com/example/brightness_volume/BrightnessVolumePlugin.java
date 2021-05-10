@@ -48,6 +48,12 @@ public class BrightnessVolumePlugin implements FlutterPlugin, MethodCallHandler 
         this.activity.getWindow().setAttributes(layoutParams);
         result.success(null);
         break;
+      case "resetCustomBrightness":
+        WindowManager.LayoutParams layoutParamsReset = this.activity.getWindow().getAttributes();
+        layoutParamsReset.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        this.activity.getWindow().setAttributes(layoutParamsReset);
+        result.success(null);
+        break;
       case "isKeptOn":
         int flags = this.activity.getWindow().getAttributes().flags;
         result.success((flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) ;

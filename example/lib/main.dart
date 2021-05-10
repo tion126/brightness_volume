@@ -60,6 +60,13 @@ class _MyAppState extends State<MyApp> {
             });
           }),
           SizedBox(height: 50),
+          MaterialButton(
+            child: Text('Reset brightness'),
+            onPressed: () {
+              BVUtils.resetCustomBrightness();
+            },
+          ),
+          SizedBox(height: 50),
           Text("keep $keepOn"),
           CupertinoSwitch(value: this.keepOn, onChanged: (e){
             this.setState(() {

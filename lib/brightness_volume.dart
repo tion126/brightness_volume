@@ -12,6 +12,8 @@ class BVUtils {
   static Future setBrightness(double brightness) =>
       _channel.invokeMethod('setBrightness', {"brightness": brightness});
 
+  static Future resetCustomBrightness() => _channel.invokeMethod('resetCustomBrightness');
+
   static Future<bool> get isKeptOn async =>
       (await _channel.invokeMethod('isKeptOn')) as bool;
 
