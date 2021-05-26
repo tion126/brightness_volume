@@ -22,23 +22,20 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"brightness" isEqualToString:call.method]) {
         result([NSNumber numberWithFloat:[UIScreen mainScreen].brightness]);
-    }
-    else if ([@"setBrightness" isEqualToString:call.method]) {
+    } else if ([@"setBrightness" isEqualToString:call.method]) {
         NSNumber *brightness = call.arguments[@"brightness"];
         [[UIScreen mainScreen] setBrightness:brightness.floatValue];
         result(nil);
-    }
-    else if ([@"resetCustomBrightness" isEqualToString:call.method]) {
+    } else if ([@"resetCustomBrightness" isEqualToString:call.method]) {
         result(nil);
-    }
-    else if ([@"isKeptOn" isEqualToString:call.method]) {
+    }else if ([@"isKeptOn" isEqualToString:call.method]) {
         bool isIdleTimerDisabled =  [[UIApplication sharedApplication] isIdleTimerDisabled];
         result([NSNumber numberWithBool:isIdleTimerDisabled]);
-    }
-    else if ([@"keepOn" isEqualToString:call.method]) {
+    } else if ([@"keepOn" isEqualToString:call.method]) {
         NSNumber *b = call.arguments[@"on"];
         [[UIApplication sharedApplication] setIdleTimerDisabled:b.boolValue];
-    }else if ([@"volume" isEqualToString:call.method]) {
+        result(nil);
+    } else if ([@"volume" isEqualToString:call.method]) {
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         CGFloat currentVol = audioSession.outputVolume;
         if (self.volumeView == nil) {
@@ -47,8 +44,7 @@
             [window addSubview:self.volumeView];
         }
         result(@(currentVol));
-    }
-    else if ([@"setVolume" isEqualToString:call.method]) {
+    } else if ([@"setVolume" isEqualToString:call.method]) {
         NSNumber *volume = call.arguments[@"volume"];
         if (self.musicController == nil) {
             self.musicController = [MPMusicPlayerController applicationMusicPlayer];
@@ -58,12 +54,11 @@
         self.musicController.volume = volume.floatValue;
 #pragma clang diagnostic pop
         result(nil);
-    }
-    else if ([@"freeDiskSpace" isEqualToString:call.method]){
+    } else if ([@"freeDiskSpace" isEqualToString:call.method]){
         result(@(self.getAvailableDiskSize));
-    }else if ([@"totalDiskSpace" isEqualToString:call.method]){
+    } else if ([@"totalDiskSpace" isEqualToString:call.method]){
         result(@(self.getTotalDiskSize));
-    }else {
+    } else {
         result(FlutterMethodNotImplemented);
     }
 }
